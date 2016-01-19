@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="utf-8" />
+
+<!-- minified scripts
+	<script type="text/javascript" src="https://d3js.org/d3.v3.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.min.js"></script>
+-->
+	<!--
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.25/dc.min.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.0-dev/dc.min.js"></script>
+	-->
+
+
+<!-- Non-minified scripts -->
+	<script type="text/javascript" src="https://d3js.org/d3.v3.js"></script>
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/crossfilter/1.3.12/crossfilter.js"></script>
+
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.25/dc.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.0.0-beta.25/dc.css" />
+
+	<!--
+	<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.0-dev/dc.js"></script>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/dc/2.1.0-dev/dc.css" />
+	-->
+
+
+	<script type="text/javascript" src="cf.js" defer></script>
+	<script type="text/javascript" src="references.js" defer></script>
+<!--
+    <link rel="stylesheet" type="text/css" href="styling.css" />
+-->
+	<style type="text/css">
+		.todo, .todo li {
+			color: red;
+			font-weight: bold;
+		/*
+			visibility: hidden;
+		*/
+		}
+
+		.loading {
+			color: green;
+			font-weight: bold;
+		}
+
+/*
+		.hidden {
+			visibility: hidden;
+		}
+*/
+		/* Reference styling inspired by the source code of Wikipedia pages */
+		.reference {
+			vertical-align: super;
+			font-size: 80%;
+			line-height: 1;
+		}
+	</style>
+
+	<title>IDE exam assignment</title>
+</head>
+
+<!-- notes:
+http://d3-legend.susielu.com/	Tired of making legends for your data visualizations? Me too, enjoy.
+http://labratrevenge.com/d3-tip/	d3.tip: Tooltips for d3.js visualizations
+
+
+
+Måske:
+http://misoproject.com/d3-chart/charts.html	extensible components, but for a specific chart-lib
+d3plus
+
+Naahhh:
+https://scottlogic.github.io/insight/#/how-to
+
+
+
+Article: http://arch.neicon.ru/xmlui/bitstream/handle/123456789/1489728/amjepid_amjepid_110_1.110-1-15.pdf?sequence=1
+"Each subject' sstanding height was measured without shoes to the nearest one - half inch ."
+
+The number of observations does not correspond to those in the article. Neither does the variables...?!
+
+-->
+
+<body>
+
+<main>
+<h1>Exam assignment, Interactive Data Exploration; January 2016</h1>
+
+<noscript>
+<h1 style="color: red; font-weight: bold;">You must enable JavaScript to fully use this page.</h1>
+</noscript>
+
+<section>
+	<h2>Introduction</h2>
+	<p class='todo'> intro or abstract/summary</p>
+	<p class='todo'>Implemented in Firefox although tried to use only well supported stuff errors may exist.</p>
+	<p class='todo'>Not intended for general public -- to technical</p>
+	<p>The visualizations presented here are for data exploration only -- they do not take the place of statistical analyses.</p>
+</section>
+
+<section>
+<!--	<h2>Materials and methods</h2> -->
+	<h2>The Dataset</h2>
+
+	<p><a href="fev.csv">The data used here</a> is obtained from the R package <code>isdals</code><span id="isdals-ref-1" class="reference isdals"></span>.
+
+	<p>The dataset contains 654 observations of	</p>
+	<ul>
+		<li>Age in whole years (3 to 19 years),</li>
+		<li>Forced Expiratory Volume in litres (method of measurement is unspecified),</li>
+		<li>Height measured in inches <q cite="#cite_speizer1979">to the nearest one-half inch</q><span id="speizer1979-ref-1" class="reference speizer79"></span>; here converted to centimetres,</li>
+		<li>Gender (zero-one coded in the source), and</li>
+		<li><q cite="#cite_isdals">Exposure to smoking</q><span class="reference isdals"></span> (zero-one coded in the source).</li>
+	</ul>
+	<p>"Exposure to smoking" is not explained in the <code>isdals</code> package.
+	In Speizer et. al. 1979 no exposure to smoking does <strong>not</strong> mean that the person has never smoked; <span class="reference speizer79">see §Definitions of cigarette  smoking</span>.</p>
+
+	<p>The source cited as the origin of the data<span class="reference speizer79"></span> includes observations of further variables such as a classification of household type, and several measures of forced vital capacity.</p>
+	<p>It is not indicated in the <code>isdals</code> package which of the measures of forced vital capacity forms the basis of the forced expiratory volume reported.</p>
+	<p>Furthermore, the number of observation, 654, does not match any of the sets reported by Speizer et. al. 1979 before, during, or after exclusion of households and children with incomplete responses.</p>
+
+	<p>I am unable to verify that the data used here corresponds to that of the referenced work.</p>
+
+
+	<h2>Seeing the data</h2>
+	<p class='todo'>
+	or a view of the data/children
+	</p>
+
+	<div id='crossfilter_plots'>
+		<p class="crossfilter_loading loading">Loading Please wait...</p>
+
+		<div id="cf_barchart-fev" style="width: 50%;">
+			<p>Forced Expiratory Volume (litres):
+			<span class='reset' style='visibility: hidden;'>(<a href="javascript:CF_reset('fev');">Reset filter</a>)
+			<br />Current filter: <span class='filter'></span></span></p>
+		</div>
+
+		<div id="cf_barchart-age" style="width: 50%;">
+			<p>Age:
+			<span class='reset' style='visibility: hidden;'>(<a href="javascript:CF_reset('age');">Reset filter</a>)
+			<br/>Current filter: <span class='filter'></span></span></p>
+		</div>
+
+
+		<div id="cf_barchart-height" style="width: 50%">
+			<p>Height (cm):
+			<span class='reset' style='visibility: hidden;'>(<a href="javascript:CF_reset('height');">Reset filter</a>) Current filter: <span class='filter'></span></span></p>
+		</div>
+
+		<div id="cf_barchart-exposure" style="width: 25%">
+			<p>Exposure to smoking:
+			<span class='reset' style='visibility: hidden;'>(<a href="javascript:CF_reset('exposure');">Reset filter</a>) <!-- Current filter: <span class='filter'></span></span></p> -->
+		</div>
+
+		<div id="cf_barchart-gender" style="width: 25%">
+			<p>Gender:
+			<span class='reset' style='visibility: hidden;'>(<a href="javascript:CF_reset('gender');">Reset filter</a>) <!-- Current filter: <span class='filter'></span></span></p> -->
+		</div>
+
+	</div>
+
+</section>
+
+<section>
+<h2>References</h2>
+<ol>
+	<li id="cite_isdals">
+		<cite>Claus Ekstrom and Helle Sorensen, <a href="https://cran.r-project.org/web/packages/isdals/">isdals: Provides datasets for Introduction to Statistical Data Analysis for the Life Sciences</a>.</cite>
+	</li>
+	<li id="cite_speizer1979">
+		<cite>I. Tager and S. Weiss and B. Rosner and F. Speizer (1979). Effect of Parental Cigarette Smoking on the Pulmonary Function of Children. American Journal of Epidemiology. 110:15-26</cite>
+		<a href="http://arch.neicon.ru/xmlui/bitstream/handle/123456789/1489728/amjepid_amjepid_110_1.110-1-15.pdf?sequence=1">(pdf)</a>.
+	</li>
+</ol>
+</section>
+
+</main>
+</body>
+
+</html>
