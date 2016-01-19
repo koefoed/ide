@@ -29,9 +29,8 @@
 
 	<script type="text/javascript" src="cf.js" defer></script>
 	<script type="text/javascript" src="references.js" defer></script>
-<!--
     <link rel="stylesheet" type="text/css" href="styling.css" />
--->
+<!--
 	<style type="text/css">
 		.todo, .todo li {
 			color: red;
@@ -57,7 +56,17 @@
 			font-size: 80%;
 			line-height: 1;
 		}
+
+		img {
+			display: block;
+			float: right;
+			max-width: 80%;
+			max-height: 500px;
+			width: auto;
+			height: auto;
+		}
 	</style>
+-->
 
 	<title>IDE exam assignment</title>
 </head>
@@ -65,7 +74,6 @@
 <!-- notes:
 http://d3-legend.susielu.com/	Tired of making legends for your data visualizations? Me too, enjoy.
 http://labratrevenge.com/d3-tip/	d3.tip: Tooltips for d3.js visualizations
-
 
 
 Måske:
@@ -95,10 +103,10 @@ The number of observations does not correspond to those in the article. Neither 
 
 <section>
 	<h2>Introduction</h2>
-	<p class='todo'> intro or abstract/summary</p>
-	<p class='todo'>Implemented in Firefox although tried to use only well supported stuff errors may exist.</p>
-	<p class='todo'>Not intended for general public -- to technical</p>
-	<p>The visualizations presented here are for data exploration only -- they do not take the place of statistical analyses.</p>
+	<p></p>
+	<p class='todo'>Implemented in Firefox although tried to use only well supported stuff errors may exist. Use a recent browser.</p>
+
+	<p>The visualizations presented here are for data exploration only &ndash; they do not take the place of statistical analyses.</p>
 </section>
 
 <section>
@@ -106,6 +114,8 @@ The number of observations does not correspond to those in the article. Neither 
 	<h2>The Dataset</h2>
 
 	<p><a href="fev.csv">The data used here</a> is obtained from the R package <code>isdals</code><span id="isdals-ref-1" class="reference isdals"></span>.
+	The data was prepared using the <a href="https://www.r-project.org/">R program</a>; <a href="prepareData.R">source code</a> is available.
+	</p>
 
 	<p>The dataset contains 654 observations of	</p>
 	<ul>
@@ -123,12 +133,11 @@ The number of observations does not correspond to those in the article. Neither 
 	<p>Furthermore, the number of observation, 654, does not match any of the sets reported by Speizer et. al. 1979 before, during, or after exclusion of households and children with incomplete responses.</p>
 
 	<p>I am unable to verify that the data used here corresponds to that of the referenced work.</p>
+</section>
 
 
-	<h2>Seeing the data</h2>
-	<p class='todo'>
-	or a view of the data/children
-	</p>
+<section>
+	<h2>A view of the children</h2>
 
 	<div id='crossfilter_plots'>
 		<p class="crossfilter_loading loading">Loading Please wait...</p>
@@ -161,21 +170,84 @@ The number of observations does not correspond to those in the article. Neither 
 			<span class='reset' style='visibility: hidden;'>(<a href="javascript:CF_reset('gender');">Reset filter</a>) <!-- Current filter: <span class='filter'></span></span></p> -->
 		</div>
 
+	<p><a href="javascript:CF_reset('all')">(Reset all filters)</a></p>
+
 	</div>
+
+	<p>The first one notices is that less than 10% of the participants in the study were exposed to smoking.
+	This may not be enough to identify any difference &ndash; indeed, Speizer et. al. 1979 find very few statistically significant differences.
+	</p>
+
+	<p>It surprised me to see that <a href="javascript:CF_filter(null,null,null,'yes',null);">more girls than boys were exposed to smoking</a>. I expected that smoking was a boy-thing and that having parents that smoke was independent of gender.
+	One also notes that only one child below the age of 10 was exposed to smoking. This is a little peculiar &ndash; did parents of 1979 quit smoking while their children were small?
+	</p>
+
+	<p>Perhaps unsurprisingly <a href="javascript:CF_filter(dc.filters.RangedFilter(4.5,5.8), null, null, null, null);">the largest forced expiratory volume</a> is found among the oldest and tallest boys, even if some of them are exposed to smoking.
+	But within this group those <a href="javascript:CF_filter(dc.filters.RangedFilter(4.5,5.8), null, null, 'yes', null); dc.redrawAll();">exposed to smoking</a> have the lowest forced expiratory volume.
+	</p>
+
+
+	<!-- *** fev as a function of age *** -->
+	<h3>Forced expiratory volume as a function of age</h3>
+	<p>The forced expiratory volume increases as the children grow into adulthood; this makes it hard to separate out the difference among those exposed to smoking and those not exposed to smoking.
+	A plot of the data as a function of age, as the one below, is needed for this.
+	</p>
+
+	<p>Here still there is no crystal clear separation between the two groups of children.
+	Although, it appears children exposed to smoke may have a slower increase of forced expiratory volume as they grow.
+		<figure>
+			<img src="fev_on_age.png">
+			<figcaption>Forced expiratory volume as a function of age coloured by exposure to smoke.
+			Lines and grey bands are from a loess smoothing fit.
+			</figcaption>
+		</figure>
+	</p>
+	
+	
+	<!-- *** Discussion about PCA *** -->
+	<h3>Principal component analysis</h3>
+	<p>
+		It could be quite interesting to make a three dimensional scatter plot of the first three principal components of a principal component analysis of the data where you could use the mouse the change the view.
+	</p>
+	<p>
+		But only 0.1 percent of the variance is captured by the third principal component and 99.77% by the first two principal components, so there is not much use of a three dimensional visualization.
+	</p>
+	<p>
+		Below the first two principal components are displayed.
+		No clear separation between children exposed to smoking and those not can bee seen.
+		<figure>
+			<img src="pc2_on_pc1.png">
+			<figcaption>A 2D plot of the first to principal components of a principal component analysis coloured by exposure to smoke.
+			</figcaption>
+		</figure>
+	</p>
+	<p>Most of the smokers are located towards the right hand side of the plot.
+	This is because the first principal component almost coincides with the height of the children.
+	As shown above, only the oldest of the children in this sample are exposed to smoke and these children are also among the tallest.
+	</p>
+
 
 </section>
 
+
+<!--
 <section>
-<h2>References</h2>
-<ol>
-	<li id="cite_isdals">
-		<cite>Claus Ekstrom and Helle Sorensen, <a href="https://cran.r-project.org/web/packages/isdals/">isdals: Provides datasets for Introduction to Statistical Data Analysis for the Life Sciences</a>.</cite>
-	</li>
-	<li id="cite_speizer1979">
-		<cite>I. Tager and S. Weiss and B. Rosner and F. Speizer (1979). Effect of Parental Cigarette Smoking on the Pulmonary Function of Children. American Journal of Epidemiology. 110:15-26</cite>
-		<a href="http://arch.neicon.ru/xmlui/bitstream/handle/123456789/1489728/amjepid_amjepid_110_1.110-1-15.pdf?sequence=1">(pdf)</a>.
-	</li>
-</ol>
+	<h2></h2>
+
+</section>
+-->
+
+<section>
+	<h2>References</h2>
+	<ol>
+		<li id="cite_isdals">
+			<cite>Claus Ekstrom and Helle Sorensen, <a href="https://cran.r-project.org/web/packages/isdals/">isdals: Provides datasets for Introduction to Statistical Data Analysis for the Life Sciences</a>.</cite>
+		</li>
+		<li id="cite_speizer1979">
+			<cite>I. Tager and S. Weiss and B. Rosner and F. Speizer (1979). Effect of Parental Cigarette Smoking on the Pulmonary Function of Children. American Journal of Epidemiology. 110:15-26</cite>
+			<a href="http://arch.neicon.ru/xmlui/bitstream/handle/123456789/1489728/amjepid_amjepid_110_1.110-1-15.pdf?sequence=1">(pdf)</a>.
+		</li>
+	</ol>
 </section>
 
 </main>
