@@ -64,7 +64,7 @@ function load_visualizations(rows) {
 		.xUnits( fevCountBins ) // Used by dc to calculate number of bars (bins)
 		.round( fevRoundToBin ) // align the brush to nearest bin to the left
 		//~ .elasticY(true)
-		//~ .renderTitle(true)
+		//~ .renderTitle(true) // The brush obscures activation of the tooltips
 		//~ .title(function(d) { console.log(d);return d.key; })
 		// Reset filter and current filter
 		.controlsUseVisibility(true)
@@ -163,6 +163,8 @@ function load_visualizations(rows) {
 
 	/* *** Expose two functions to manipulate the charts from the text *** */
 	window.CF_filter = function(fevFilter, ageFilter, heightFilter, exposureFilter, genderFilter) {
+		CF_reset('all');
+
 		fevBarChart.filter(fevFilter);
 		ageBarChart.filter(ageFilter);
 		heightBarChart.filter(heightFilter);
@@ -196,7 +198,6 @@ function load_visualizations(rows) {
 				console.error('Bad argument to CF_reset');
 		}
 		dc.redrawAll();
-		console.log('yay');
 	}
 
 };
