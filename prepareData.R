@@ -15,7 +15,7 @@ fev$Smoke  <- as.factor( ifelse(fev$Smoke==0, 'no', 'yes') )
 
 summary(fev)
 
-#write.csv(fev, 'fev.csv', row.names=F)
+write.csv(fev, 'fev.csv', row.names=F)
 
 summary(pca)
 plot(pca)
